@@ -648,6 +648,7 @@ class HYVideoDiffusionTransformer(ModelMixin, ConfigMixin):
         freqs_cos: Optional[torch.Tensor] = None,
         freqs_sin: Optional[torch.Tensor] = None,
         guidance: torch.Tensor = None,  # Guidance for modulation, should be cfg_scale x 1000.
+        pipeline=None,
         return_dict: bool = True,
     ) -> Union[torch.Tensor, Dict[str, torch.Tensor]]:
         out = {}
@@ -770,6 +771,8 @@ class HYVideoDiffusionTransformer(ModelMixin, ConfigMixin):
                 ori_img = img.clone()
                 # --------------------- Pass through DiT blocks ------------------------
                 for _, block in enumerate(self.double_blocks):
+                    if pipeline._interrupt:
+                        return None
                     double_block_args = [
                         img,
                         txt,
@@ -788,6 +791,8 @@ class HYVideoDiffusionTransformer(ModelMixin, ConfigMixin):
                 x = torch.cat((img, txt), 1)
                 if len(self.single_blocks) > 0:
                     for _, block in enumerate(self.single_blocks):
+                        if pipeline._interrupt:
+                            return None
                         single_block_args = [
                             x,
                             vec,
@@ -807,6 +812,9 @@ class HYVideoDiffusionTransformer(ModelMixin, ConfigMixin):
         else:        
             # --------------------- Pass through DiT blocks ------------------------
             for _, block in enumerate(self.double_blocks):
+                if pipeline._interrupt:
+                    return None
+
                 double_block_args = [
                     img,
                     txt,
@@ -825,6 +833,9 @@ class HYVideoDiffusionTransformer(ModelMixin, ConfigMixin):
             x = torch.cat((img, txt), 1)
             if len(self.single_blocks) > 0:
                 for _, block in enumerate(self.single_blocks):
+                    if pipeline._interrupt:
+                        return None
+
                     single_block_args = [
                         x,
                         vec,
