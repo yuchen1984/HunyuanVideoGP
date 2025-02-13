@@ -177,7 +177,8 @@ class TextEncoder(nn.Module):
         else:
             raise ValueError(f"Unsupported text encoder type: {text_encoder_type}")
 
-        if "llm" in text_encoder_type:
+        #if "llm" in text_encoder_type:
+        if False:
 
             from mmgp import offload
             

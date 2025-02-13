@@ -520,6 +520,7 @@ class HYVideoDiffusionTransformer(ModelMixin, ConfigMixin):
         self.guidance_embed = guidance_embed
         self.rope_dim_list = rope_dim_list
         self.attention_mode = attention_mode
+        self.enable_teacache = False
         
         # Text projection. Default to linear projection.
         # Alternative: TokenRefiner. See more details (LI-DiT): http://arxiv.org/abs/2406.11831

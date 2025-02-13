@@ -21,8 +21,11 @@ def main():
     if not os.path.exists(args.save_path):
         os.makedirs(save_path, exist_ok=True)
 
-    models_root_path = "ckpts/hunyuan-video-t2v-720p/transformers/hunyuan_video_720_bf16.safetensors"
-    text_encoder_filename = "ckpts/hunyuan-video-t2v-720p/text_encoder/llava-llama-3-8b_fp16.safetensors"    
+    models_root_path = "ckpts/hunyuan-video-t2v-720p/transformers/mp_rank_00_model_states.pt"
+    #models_root_path = "ckpts/hunyuan-video-t2v-720p/transformers/hunyuan_video_720_bf16.safetensors"
+    #text_encoder_filename = "ckpts/hunyuan-video-t2v-720p/text_encoder/llava-llama-3-8b_fp16.safetensors" 
+    #text_encoder_filename = "ckpts/text_encoder/model.safetensors" 
+    text_encoder_filename = "ckpts/text_encoder/" 
     import json
     with open("./ckpts/hunyuan-video-t2v-720p/vae/config.json", "r", encoding="utf-8") as reader:
         text = reader.read()
@@ -35,10 +38,12 @@ def main():
 
     # Load models
     hunyuan_video_sampler = HunyuanVideoSampler.from_pretrained(models_root_path,text_encoder_filename, args=args)
+    #hunyuan_video_sampler = HunyuanVideoSampler.from_pretrained(models_root_path,args=args)
 
     from mmgp import offload, profile_type 
     pipe = hunyuan_video_sampler.pipeline
-    offload.profile(pipe, profile_no= profile_type.HighRAM_LowVRAM_Fast)    
+    #offload.profile(pipe, profile_no= profile_type.HighRAM_LowVRAM_Fast)    
+    offload.profile(pipe, profile_no= profile_type.HighRAM_LowVRAM)    
 
     # Get the updated args
     args = hunyuan_video_sampler.args
