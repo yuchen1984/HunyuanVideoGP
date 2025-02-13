@@ -140,7 +140,7 @@ class Inference(object):
         self.parallel_args = parallel_args
 
     @classmethod
-    def from_pretrained(cls, pretrained_model_path, text_encoder_path, args, device=None, **kwargs):
+    def from_pretrained(cls, pretrained_model_path, args, device=None, **kwargs):
         """
         Initialize the Inference pipeline.
 
@@ -251,8 +251,7 @@ class Inference(object):
             apply_final_norm=args.apply_final_norm,
             reproduce=args.reproduce,
             logger=logger,
-            device=device if not args.use_cpu_offload else "cpu",
-            text_encoder_path = text_encoder_path 
+            device=device if not args.use_cpu_offload else "cpu"
         )
         text_encoder_2 = None
         if args.text_encoder_2 is not None:

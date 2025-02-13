@@ -177,22 +177,13 @@ class TextEncoder(nn.Module):
         else:
             raise ValueError(f"Unsupported text encoder type: {text_encoder_type}")
 
-        #if "llm" in text_encoder_type:
-        if False:
-
-            from mmgp import offload
-            
-            self.model= offload.fast_load_transformers_model(self.model_path) #, pinInMemory = True, partialPinning = True
-            self.model.final_layer_norm = self.model.norm
-        
-        else:
-            self.model, self.model_path = load_text_encoder(
-                text_encoder_type=self.text_encoder_type,
-                text_encoder_precision=self.precision,
-                text_encoder_path=self.model_path,
-                logger=self.logger,
-                device=device,
-            )
+        self.model, self.model_path = load_text_encoder(
+            text_encoder_type=self.text_encoder_type,
+            text_encoder_precision=self.precision,
+            text_encoder_path=self.model_path,
+            logger=self.logger,
+            device=device,
+        )
 
         self.dtype = self.model.dtype
         self.device = self.model.device
